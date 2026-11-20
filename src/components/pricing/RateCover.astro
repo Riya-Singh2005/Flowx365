@@ -1,0 +1,89 @@
+---
+import Icon from '../ui/Icon.astro';
+---
+
+<!-- The rate card's cover. The plans lie on the same navy desk below it. -->
+<section class="rate-cover" data-nav="dark" aria-labelledby="pricing-title">
+  <div class="hero-sentinel" aria-hidden="true"></div>
+  <h1 class="display-xl title" id="pricing-title" data-reveal="mask">
+    <span class="line">A plan</span>
+    <span class="line">for every</span>
+    <span class="line">stage.</span>
+    <span class="visually-hidden">The right FlowX365 plan for every stage of your business.</span>
+  </h1>
+
+  <div class="act">
+    <p class="lede" data-reveal style="--i: 2">
+      From everyday sales and stock to several companies under one login, there is a FlowX365 plan
+      shaped around how your business works today, and room to grow into the next one.
+    </p>
+    <a class="link-quiet" href="#plans" data-reveal style="--i: 3">
+      See the plans <Icon name="arrow-right" class="down" />
+    </a>
+  </div>
+</section>
+
+<style>
+  .rate-cover {
+    position: relative;
+    background: var(--cover);
+    color: var(--on-cover);
+    padding: calc(var(--nav-h) + clamp(2.5rem, 6vw, 5rem)) var(--gutter) clamp(3rem, 5vw, 4.5rem);
+  }
+
+  .hero-sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 60vh;
+    height: 60svh;
+    pointer-events: none;
+  }
+
+  /* Sized so the top of the rate sheets shows in the first viewport. */
+  .title {
+    font-size: min(var(--display-xl), 10vw, 15svh);
+  }
+
+  .title .line {
+    display: block;
+  }
+
+  /* The last line is the copy beneath: canary, as on the closing cover. */
+  .title .line:nth-child(3) {
+    color: var(--triplicate);
+  }
+
+  .act {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem clamp(2rem, 6vw, 6rem);
+    align-items: end;
+    max-width: 78rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .act .lede {
+    color: var(--on-cover-2);
+  }
+
+  .act .link-quiet {
+    color: var(--on-cover);
+  }
+
+  /* Points down the page. The shared 3px hover nudge runs along the rotated
+     arrow, so it nudges downward too. */
+  .act :global(.down) {
+    rotate: 90deg;
+  }
+
+  @media (max-width: 760px) {
+    .title {
+      font-size: 16.5vw;
+    }
+    .act {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+import Home from '../layouts/Home.astro';
+import { sections } from '../data/sections';
+
+// Each section's own address (/how-it-works, /questions, ...) serves the
+// homepage, which scrolls to the section on load. The canonical stays `/`.
+export function getStaticPaths() {
+  return sections.map((s) => ({ params: { section: s.slug } }));
+}
+---
+
+<Home canonicalPath="/" />

@@ -1,0 +1,708 @@
+---
+import Icon from './ui/Icon.astro';
+import { products } from '../data/products';
+import { sections, sectionHref } from '../data/sections';
+
+// `current` names the page when it is not the homepage. Section links then
+// use their own paths (/how-it-works), since the fragments live on the homepage.
+interface Props {
+  current?: 'pricing';
+}
+
+const { current } = Astro.props;
+const onHome = !current;
+const href = (id: string) => sectionHref(id, onHome);
+const productsHref = href('products');
+// The flagship's own entry opens the homepage at its hero; the other products
+// go to the product table. The logo (staging) is a separate link on purpose.
+const productHref = (name: string) => (name === 'FlowX365' ? '/' : productsHref);
+
+const chapters = sections.filter((s) => s.chapter);
+
+const primary = [
+  { id: 'chain', label: 'How it works' },
+  { id: 'products', label: 'Product' },
+  { id: 'day', label: 'A day' },
+  { id: 'questions', label: 'Questions' },
+];
+---
+
+<header class="nav" data-theme="dark" data-quiet="false">
+  <div class="nav-bar">
+    <!-- Two links on purpose: the X mark opens the demo environment
+         (staging), the FlowX365 wordmark returns to the homepage hero. -->
+    <div class="brand">
+      <a
+        class="brand-mark"
+        href="https://staging.example.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="FlowX365 demo environment (opens in a new tab)"
+      >
+        <img src="/brand/flowx365-mark-96.webp" width="30" height="30" alt="" />
+      </a>
+      <a class="wordmark" href="/" aria-label="FlowX365 home">FlowX365</a>
+    </div>
+
+    <nav class="links" aria-label="Primary">
+      <ul>
+        {
+          primary.map((l) =>
+            l.id === 'products' ? (
+              <li class="has-menu">
+                <a href={productsHref}>{l.label}</a>
+                <button
+                  class="pm-toggle"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="product-menu"
+                  aria-label="Show products"
+                >
+                  <Icon name="chevron" size={16} class="pm-chev" />
+                </button>
+                <div class="product-menu" id="product-menu" hidden>
+                  <ul>
+                    {products.map((p) => (
+                      <li>
+                        <a href={productHref(p.name)}>
+                          <span>{p.name}</span>
+                          {p.soon && <span class="soon serial">Coming soon</span>}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a href={href(l.id)}>{l.label}</a>
+              </li>
+            ),
+          )
+        }
+        <li>
+          <a href="/pricing" aria-current={current === 'pricing' ? 'page' : undefined}>Pricing</a>
+        </li>
+      </ul>
+    </nav>
+
+
+    <div class="end">
+      <button class="contents-btn" type="button" aria-expanded="false" aria-controls="contents" aria-label="Contents">
+        <span class="cb-label">Contents</span>
+        <Icon name="chevron" size={16} class="cb-chev" />
+        <Icon name="menu" size={22} class="cb-menu" />
+      </button>
+      <button class="btn cta" type="button" data-demo-trigger>Get in touch</button>
+    </div>
+  </div>
+
+  <div class="contents" id="contents" hidden>
+    <ol>
+      {
+        chapters.map((c, i) => (
+          <li>
+            <a href={href(c.id)}>
+              <span class="serial">No. {String(i + 1).padStart(2, '0')}</span>
+              <span>{c.label}</span>
+            </a>
+            {c.id === 'what' && (
+              <ul class="contents-products" aria-label="Products">
+                {products.map((p) => (
+                  <li>
+                    <a href={productHref(p.name)}>
+                      <span>{p.name}</span>
+                      {p.soon && <span class="soon serial">Coming soon</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+    <a class="contents-pricing" href="/pricing" aria-current={current === 'pricing' ? 'page' : undefined}>
+      <span>Pricing</span>
+      <Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    --fg: var(--ink);
+    --fg-2: var(--ink-3);
+    --bg: transparent;
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    color: var(--fg);
+    transition: color 250ms ease;
+  }
+
+  .nav[data-theme='dark'] {
+    --fg: var(--on-cover);
+    --fg-2: var(--on-cover-2);
+  }
+
+  .nav-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    height: var(--nav-h);
+    padding: 0 var(--gutter);
+  }
+
+  /* The bar's ground follows the sheet beneath it, never glass. */
+  .nav-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--bar, transparent);
+    opacity: 0;
+    transition:
+      opacity 300ms ease,
+      background-color 300ms ease;
+  }
+
+  .nav[data-quiet='true'] .nav-bar::before {
+    opacity: 1;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: none;
+  }
+
+  /* A 44px target around the 30px mark, its left edge on the gutter. */
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-left: -7px;
+    border-radius: 50%;
+    transition: transform 140ms var(--ease-out);
+  }
+
+  .brand-mark:active {
+    transform: scale(0.94);
+  }
+
+  .brand img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.1875rem;
+    letter-spacing: -0.02em;
+    font-variation-settings: 'wdth' 115;
+  }
+
+  .links ul {
+    display: flex;
+    gap: clamp(1rem, 2.2vw, 2rem);
+  }
+
+  .links a {
+    display: inline-block;
+    padding: 0.75rem 0;
+    font-weight: var(--weight-semibold);
+    font-variation-settings: 'wdth' var(--wdth-ui);
+    font-size: 0.9375rem;
+    color: var(--fg-2);
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .links a:hover {
+      color: var(--fg);
+    }
+  }
+
+  /* The page you are on: the live colour marks the current state. */
+  .links a[aria-current='page'] {
+    color: var(--fg);
+    text-decoration: underline 2px var(--live);
+    text-underline-offset: 0.55em;
+  }
+
+  /* Product: a link to the product table, plus a separate toggle for the
+     list of products. Two controls, so neither click does both jobs. */
+  .has-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .pm-toggle {
+    display: none;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--fg-2);
+    cursor: pointer;
+    transition: color 160ms ease;
+  }
+
+  :global(.js) .pm-toggle {
+    display: inline-grid;
+  }
+
+  .pm-toggle :global(.pm-chev) {
+    transition: transform 250ms var(--ease-out);
+  }
+
+  .pm-toggle[aria-expanded='true'] {
+    color: var(--fg);
+  }
+
+  .pm-toggle[aria-expanded='true'] :global(.pm-chev) {
+    transform: rotate(180deg);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pm-toggle:hover {
+      color: var(--fg);
+    }
+  }
+
+  /* Same card as the Contents manifest. */
+  .product-menu {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: -0.75rem;
+    width: max-content;
+    min-width: 15rem;
+    max-width: calc(100vw - 2 * var(--gutter));
+    padding: 0.5rem;
+    background: var(--original);
+    color: var(--ink);
+    border-radius: 12px;
+    box-shadow:
+      0 1px 2px rgb(15 21 32 / 0.1),
+      0 24px 48px -16px rgb(15 21 32 / 0.35);
+    transform-origin: top left;
+    transition:
+      opacity 180ms var(--ease-out),
+      transform 220ms var(--ease-out);
+  }
+
+  .product-menu[data-open='false'] {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+
+  .product-menu ul {
+    display: block;
+  }
+
+  .links .product-menu a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+    color: var(--ink);
+  }
+
+  .soon {
+    color: var(--ink-3);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .links .product-menu a:hover {
+      background: rgb(17 24 39 / 0.05);
+      color: var(--ink);
+    }
+  }
+
+  .links {
+    transition:
+      opacity 300ms var(--ease-out),
+      transform 400ms var(--ease-out);
+  }
+
+  .nav[data-quiet='true'] .links {
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    visibility: hidden;
+    transition:
+      opacity 300ms var(--ease-out),
+      transform 400ms var(--ease-out),
+      visibility 0s 300ms;
+  }
+
+  .end {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 1.8vw, 1.5rem);
+    margin-left: auto;
+  }
+
+  .cta {
+    min-height: 2.625rem;
+    padding: 0 1.1rem;
+    font-size: 0.9375rem;
+  }
+
+  .contents-btn {
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 0 0.25rem;
+    background: none;
+    border: 0;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+  }
+
+  .contents-btn :global(.cb-chev) {
+    transition: transform 250ms var(--ease-out);
+  }
+
+  .contents-btn[aria-expanded='true'] :global(.cb-chev) {
+    transform: rotate(180deg);
+  }
+
+  .contents-btn :global(.cb-menu) {
+    display: none;
+  }
+
+  .nav[data-quiet='true'] .contents-btn {
+    display: inline-flex;
+  }
+
+  /* Contents: the chapter manifest. */
+  .contents {
+    position: absolute;
+    top: calc(var(--nav-h) - 0.25rem);
+    right: var(--gutter);
+    width: min(22rem, calc(100vw - 2 * var(--gutter)));
+    /* Short phones: the manifest scrolls inside itself rather than off-screen. */
+    max-height: calc(100vh - var(--nav-h) - 0.75rem);
+    max-height: calc(100svh - var(--nav-h) - 0.75rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.75rem;
+    background: var(--original);
+    color: var(--ink);
+    border-radius: 12px;
+    box-shadow:
+      0 1px 2px rgb(15 21 32 / 0.1),
+      0 24px 48px -16px rgb(15 21 32 / 0.35);
+    transform-origin: top right;
+    transition:
+      opacity 180ms var(--ease-out),
+      transform 220ms var(--ease-out);
+  }
+
+  .contents[data-open='false'] {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+
+  .contents a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding: 0.7rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: var(--weight-semibold);
+    font-variation-settings: 'wdth' var(--wdth-ui);
+  }
+
+  .contents a .serial {
+    color: var(--ink-3);
+  }
+
+  /* The products, listed under the chapter that holds their table. */
+  .contents-products {
+    margin: 0 0 0.25rem 3.6rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--rule);
+  }
+
+  .contents .contents-products a {
+    justify-content: space-between;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .contents a[aria-current='true'] {
+    background: var(--carbon-soft);
+    color: var(--carbon);
+  }
+
+  /* Pricing is a page of its own, not a chapter: set apart below a tear line. */
+  .contents .contents-pricing {
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.95rem;
+    border-top: 1px dashed var(--rule-strong);
+    border-radius: 0 0 8px 8px;
+  }
+
+  .contents .contents-pricing[aria-current='page'] {
+    background: var(--carbon-soft);
+    color: var(--carbon);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .contents a:hover {
+      background: rgb(17 24 39 / 0.05);
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .links {
+      display: none;
+    }
+    .contents-btn {
+      display: inline-flex;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .wordmark {
+      font-size: 1.0625rem;
+    }
+    .cta {
+      padding: 0 0.9rem;
+    }
+  }
+
+  /* On phones the manifest opens from a plain menu button. */
+  @media (max-width: 560px) {
+    .wordmark {
+      font-size: 1rem;
+    }
+    .cb-label,
+    .contents-btn :global(.cb-chev) {
+      display: none;
+    }
+    .contents-btn :global(.cb-menu) {
+      display: block;
+    }
+    .contents-btn {
+      order: 2;
+      min-width: 44px;
+      justify-content: center;
+      padding: 0;
+    }
+    .end {
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    .cta {
+      padding-inline: 0.8rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 340px) {
+    .nav-bar {
+      gap: 0.5rem;
+    }
+    .wordmark {
+      font-size: 0.9375rem;
+    }
+    .cta {
+      padding-inline: 0.7rem;
+      font-size: 0.8125rem;
+    }
+  }
+</style>
+
+<script>
+  import { showSectionPath } from '../scripts/sections';
+
+  const nav = document.querySelector<HTMLElement>('.nav')!;
+  const bar = nav.querySelector<HTMLElement>('.nav-bar')!;
+  const btn = nav.querySelector<HTMLButtonElement>('.contents-btn')!;
+  const panel = nav.querySelector<HTMLElement>('#contents')!;
+  const items = [...panel.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+  const pmBtn = nav.querySelector<HTMLButtonElement>('.pm-toggle');
+  const pm = nav.querySelector<HTMLElement>('#product-menu');
+
+  // Quiet once the cover has lifted: the links give way to the Contents button.
+  // The cover itself is sticky and never leaves, so a sentinel marks it.
+  const sentinel = document.querySelector('.hero-sentinel');
+  const quiet = new IntersectionObserver(([e]) => {
+    nav.dataset.quiet = String(!e.isIntersecting);
+    if (e.isIntersecting) close();
+    else closeProducts();
+  });
+  if (sentinel) quiet.observe(sentinel);
+
+  // Whichever section sits under the bar sets its ink and ground. Sheets slide
+  // over the sticky cover, so of all sections under the bar the one latest in
+  // the document is the one on top.
+  const sections = [...document.querySelectorAll<HTMLElement>('[data-nav]')];
+  const under = new Set<HTMLElement>();
+  let current: HTMLElement | null = null;
+
+  function apply() {
+    let top: HTMLElement | null = null;
+    for (const s of sections) if (under.has(s)) top = s;
+    if (!top || top === current) return;
+    current = top;
+    nav.dataset.theme = top.dataset.nav!;
+    bar.style.setProperty('--bar', getComputedStyle(top).backgroundColor);
+    const chapter = top.dataset.chapter;
+    items.forEach((a) =>
+      a.setAttribute('aria-current', String(!!chapter && a.hash === `#${top!.id}`)),
+    );
+  }
+
+  let underBar: IntersectionObserver;
+  function watch() {
+    underBar?.disconnect();
+    under.clear();
+    underBar = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const s = e.target as HTMLElement;
+          if (e.isIntersecting) under.add(s);
+          else under.delete(s);
+        }
+        apply();
+      },
+      // A one-pixel line through the middle of the bar.
+      { rootMargin: `-34px 0px -${Math.max(0, window.innerHeight - 35)}px 0px` },
+    );
+    sections.forEach((s) => underBar.observe(s));
+  }
+  watch();
+  // Rebuild only for a real resize. A phone's address bar changes the height
+  // by well under 150px on every swipe and must not churn the observer.
+  let seen = { w: innerWidth, h: innerHeight };
+  let resizeTimer = 0;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      if (innerWidth === seen.w && Math.abs(innerHeight - seen.h) < 150) return;
+      seen = { w: innerWidth, h: innerHeight };
+      watch();
+    }, 200);
+  });
+
+  function open() {
+    panel.hidden = false;
+    panel.dataset.open = 'false';
+    requestAnimationFrame(() => (panel.dataset.open = 'true'));
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function close() {
+    if (panel.hidden) return;
+    panel.dataset.open = 'false';
+    btn.setAttribute('aria-expanded', 'false');
+    setTimeout(() => {
+      if (btn.getAttribute('aria-expanded') === 'false') panel.hidden = true;
+    }, 220);
+  }
+
+  // The products list under the Product link, opened and closed like Contents.
+  function openProducts() {
+    if (!pm || !pmBtn) return;
+    close();
+    pm.hidden = false;
+    pm.dataset.open = 'false';
+    requestAnimationFrame(() => (pm.dataset.open = 'true'));
+    pmBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeProducts() {
+    if (!pm || !pmBtn || pm.hidden) return;
+    pm.dataset.open = 'false';
+    pmBtn.setAttribute('aria-expanded', 'false');
+    setTimeout(() => {
+      if (pmBtn.getAttribute('aria-expanded') === 'false') pm.hidden = true;
+    }, 220);
+  }
+
+  const productItem = pmBtn?.parentElement;
+  pmBtn?.addEventListener('click', () => (pm?.hidden ? openProducts() : closeProducts()));
+  productItem?.addEventListener('focusout', (e) => {
+    if (!productItem.contains(e.relatedTarget as Node)) closeProducts();
+  });
+
+  // Every link to the product table glides there; html's scroll-padding keeps
+  // it clear of the bar.
+  const productTable = document.getElementById('products');
+  nav.querySelectorAll<HTMLAnchorElement>('a[href="#products"]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      if (!productTable) return;
+      e.preventDefault();
+      close();
+      closeProducts();
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      productTable.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      showSectionPath('products');
+      productTable.focus({ preventScroll: true });
+    }),
+  );
+
+  // The wordmark and FlowX365 in the product lists open the homepage at its
+  // hero, with a plain `/` in the address. On the homepage (and its
+  // section-path copies) they scroll to the top instead of reloading.
+  nav.querySelectorAll<HTMLAnchorElement>('a[href="/"]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      close();
+      closeProducts();
+      if (!document.getElementById('top')) return;
+      e.preventDefault();
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      if (location.pathname !== '/' || location.hash) history.pushState(null, '', '/' + location.search);
+    }),
+  );
+  pm?.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeProducts));
+
+  btn.addEventListener('click', () => {
+    closeProducts();
+    if (panel.hidden) open();
+    else close();
+  });
+  items.forEach((a) => a.addEventListener('click', close));
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!panel.hidden) {
+      close();
+      btn.focus();
+    } else if (pm && pmBtn && !pm.hidden) {
+      closeProducts();
+      pmBtn.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (!nav.contains(e.target as Node)) close();
+    if (!productItem?.contains(e.target as Node)) closeProducts();
+  });
+</script>

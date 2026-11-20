@@ -1,0 +1,647 @@
+---
+import DocSheet from './DocSheet.astro';
+
+// The top sheet is the page's h1; the duplicate and triplicate beneath it are
+// decoration, kept out of the heading so it reads once.
+const copies = [
+  { n: 3, Tag: 'div' },
+  { n: 2, Tag: 'div' },
+  { n: 1, Tag: 'h1' },
+] as const;
+
+// The order the slogan is about, on its own paper: written once as the
+// quotation on the left, flowing through to the invoice on the right. Each
+// side is an original over its carbon copy; `depth` is how far a sheet
+// travels with the pointer.
+const sides = [
+  {
+    side: 'left',
+    papers: [
+      { kind: 'salesOrder', depth: 10 },
+      { kind: 'quotation', depth: 18 },
+    ],
+  },
+  {
+    side: 'right',
+    papers: [
+      { kind: 'deliveryNote', depth: 10 },
+      { kind: 'invoice', depth: 18 },
+    ],
+  },
+] as const;
+---
+
+<section class="hero" id="top" data-nav="dark" aria-labelledby="hero-title">
+  <div class="hero-dim" aria-hidden="true"></div>
+
+  {
+    sides.map(({ side, papers }) => (
+      <div class={`papers papers-${side}`} aria-hidden="true">
+        {papers.map(({ kind, depth }, i) => (
+          <div class={`paper paper-${i === 0 ? 'back' : 'front'}`} data-depth={depth} style={`--i: ${i}`}>
+            <DocSheet kind={kind} hidden />
+          </div>
+        ))}
+      </div>
+    ))
+  }
+
+  <div class="stage">
+    <div class="slogan display-xl">
+      {
+        copies.map(({ n, Tag }) => (
+          <Tag class={`copy copy-${n}`} id={n === 1 ? 'hero-title' : undefined} aria-hidden={n === 1 ? undefined : 'true'}>
+            <span class="line"><span style="--l: 0">Write it</span></span>{' '}
+            <span class="line"><span style="--l: 1">once.</span></span>{' '}
+            <span class="line"><span style="--l: 2">Let it</span></span>{' '}
+            <span class="line"><span class="last" style="--l: 3">flow<span class="stop">.</span></span></span>
+          </Tag>
+        ))
+      }
+    </div>
+
+    <p class="lede">One connected platform for your entire business.</p>
+    <a class="explore" href="#what">
+      Scroll to see how it flows
+      <span class="flow" aria-hidden="true"><span class="ink"></span></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --peek: clamp(3.5rem, 2.8rem + 2vw, 5rem);
+    --pad-top: calc(var(--nav-h) + clamp(1rem, 3vh, 2.5rem));
+    --pad-bottom: clamp(1.5rem, 5vh, 3.5rem);
+    /* The room each fan of papers takes beside the slogan, and a sheet's width. */
+    --side: clamp(9rem, 19vw, 22rem);
+    --paper-w: clamp(16rem, 27vw, 34rem);
+    /* Everything in the stage that is not the headline, stacked. */
+    --stage-rest: 13.25rem;
+    /*
+     * Four lines of slogan as large as the cover allows between the papers.
+     * "Write it" is the widest line (about 5.5em); four lines stand about
+     * 3.4em tall. The size is the smaller of the width left between the
+     * papers and the height left by the rest of the stage; the papers are
+     * placed from it too.
+     */
+    --fit-w: calc((100cqi - 2 * var(--side)) / 5.6);
+    --fit-h: calc((100vh - var(--pad-top) - var(--pad-bottom) - var(--stage-rest)) / 3.45);
+    --fs: min(var(--fit-w), var(--fit-h));
+    position: sticky;
+    top: 0;
+    /* Full screen: the first sheet's overlap starts below the fold. */
+    min-height: max(34rem, calc(100vh + var(--peek)));
+    min-height: max(34rem, calc(100svh + var(--peek)));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    padding: var(--pad-top) var(--gutter) calc(var(--peek) + var(--pad-bottom));
+    background: var(--cover);
+    color: var(--on-cover);
+    overflow: clip;
+    z-index: 0;
+    /* Lets the headline size itself against the hero's own width. */
+    container-type: inline-size;
+  }
+
+  /* Darkens as the first sheet slides over the cover. */
+  .hero-dim {
+    position: absolute;
+    inset: 0;
+    background: var(--cover-deep);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    transition: opacity 700ms var(--ease-out);
+  }
+
+  /* The centred column: the slogan, one line, one action. */
+  .stage {
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  @supports (height: 100svh) {
+    .hero {
+      --fit-h: calc((100svh - var(--pad-top) - var(--pad-bottom) - var(--stage-rest)) / 3.45);
+    }
+  }
+
+  .slogan {
+    position: relative;
+    font-size: var(--fs);
+    transition: transform 1100ms var(--ease-out);
+  }
+
+  .copy {
+    display: block;
+    width: max-content;
+    font: inherit;
+  }
+
+  .copy .line {
+    display: block;
+  }
+
+  /* The font's W-stop kern tucks the stop under the W's arm, where it
+     touches at this size. Kerning is off for the line so the gap is set here
+     and lands the same in every browser. */
+  .last {
+    font-kerning: none;
+  }
+
+  .stop {
+    margin-left: -0.14em;
+  }
+
+  .copy-1 {
+    position: relative;
+    z-index: 2;
+    color: var(--original);
+  }
+
+  .copy-2,
+  .copy-3 {
+    position: absolute;
+    inset: 0;
+    user-select: none;
+    transform-origin: 0% 100%;
+    transition:
+      opacity 350ms var(--ease-out),
+      transform 1100ms var(--ease-out);
+  }
+
+  /* The copies beneath stay hidden until the cover lifts. */
+  .copy-2 {
+    z-index: 1;
+    color: var(--duplicate);
+    opacity: 0;
+  }
+
+  .copy-3 {
+    z-index: 0;
+    color: var(--triplicate);
+    opacity: 0;
+  }
+
+  .lede {
+    margin-top: clamp(1rem, 3vh, 2rem);
+    max-width: none;
+    font-size: var(--step-1);
+    color: var(--on-cover);
+  }
+
+  .lede {
+    transition: opacity 500ms var(--ease-out);
+  }
+
+  /*
+   * The way on: ink running down a short track, the slogan's flow made
+   * literal, under a plain instruction. It is the cover's one action, so the
+   * ink is the live orange. Once the reader scrolls it has done its job and
+   * goes, and it comes back at the top.
+   */
+  .explore {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: clamp(2rem, 7vh, 4rem);
+    padding: 0.5rem 1rem;
+    /* A quiet cue, well below the slogan and the lede. */
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--on-cover-2);
+    text-decoration: none;
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 160ms var(--ease-out);
+  }
+
+  .explore:active {
+    transform: scale(0.97);
+  }
+
+  .flow {
+    position: relative;
+    width: 3px;
+    height: 2.75rem;
+    border-radius: 2px;
+    background: var(--cover-rule);
+    overflow: hidden;
+    transition: translate 200ms var(--ease-out);
+  }
+
+  /* Down the track, then a rest before the next drop. */
+  .ink {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--live);
+    transform: translateY(-100%);
+    animation: ink 2200ms var(--ease-in-out) infinite;
+  }
+
+  @keyframes ink {
+    0% {
+      transform: translateY(-100%);
+    }
+    55%,
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .explore:hover .flow {
+      translate: 0 3px;
+    }
+  }
+
+  /*
+   * The papers. Each side is a fan of two sheets, cropped by the screen edge
+   * and by the first sheet sliding over the cover. A paper's `transform` holds
+   * its place in the fan; the script writes only `translate`, for the pointer.
+   */
+  .papers {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--paper-w);
+    z-index: 1;
+    pointer-events: none;
+    transition: transform 1100ms var(--ease-out);
+  }
+
+  /* Each fan's inner edge keeps clear of the slogan's lower lines (about 4em
+     wide, centred), so the documents' names read and the outer edges crop. */
+  .papers-left {
+    left: calc(50% - 2.05 * var(--fs) - 2.5rem - var(--paper-w));
+  }
+
+  .papers-right {
+    right: calc(50% - 2.05 * var(--fs) - 2.5rem - var(--paper-w));
+  }
+
+  .paper {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    will-change: translate;
+  }
+
+  .paper-front {
+    top: 36%;
+  }
+
+  .paper-back {
+    top: 27%;
+  }
+
+  .papers-left .paper-front {
+    transform: rotate(-6deg);
+  }
+
+  .papers-left .paper-back {
+    transform: translateX(-14%) rotate(-14deg);
+  }
+
+  .papers-right .paper-front {
+    transform: rotate(6deg);
+  }
+
+  .papers-right .paper-back {
+    transform: translateX(14%) rotate(14deg);
+  }
+
+  /* On load the headline rises into place, line by line, and the rest of the
+     stage follows; the papers slide in from their edges. */
+  :global(.js) .copy-1 .line > span {
+    display: inline-block;
+    animation: rise 1100ms var(--ease-out) backwards;
+    animation-delay: calc(120ms + var(--l) * 110ms);
+  }
+
+  :global(.js) .lede {
+    animation: fade-up 800ms var(--ease-out) 560ms backwards;
+  }
+
+  :global(.js) .explore {
+    animation: fade-up 800ms var(--ease-out) 640ms backwards;
+  }
+
+  :global(.js) .paper {
+    animation: paper-in 1000ms var(--ease-out) backwards;
+    animation-delay: calc(240ms + var(--i) * 90ms);
+  }
+
+  :global(.js) .papers-left .paper {
+    --in-x: -40%;
+  }
+
+  :global(.js) .papers-right .paper {
+    --in-x: 40%;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.28em, 0);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+  }
+
+  @keyframes paper-in {
+    from {
+      opacity: 0;
+      translate: var(--in-x) 12%;
+    }
+  }
+
+  /*
+   * The lift. Triggered, not scrubbed: the moment the reader starts scrolling
+   * the carbon set fans open as one time-based transition, and folds back at
+   * the top. Transform and opacity transitions run off the main thread in every
+   * browser, and once they settle the cover is a single flat layer again, so
+   * the scroll itself costs nothing. The papers open outwards with it.
+   */
+  .hero[data-lifted] .slogan {
+    transform: translate3d(0, -4vh, 0);
+  }
+
+  .hero[data-lifted] .copy-2 {
+    opacity: 1;
+    transform: translate3d(0, 0.02em, 0) rotate(1.6deg);
+  }
+
+  .hero[data-lifted] .copy-3 {
+    opacity: 1;
+    transform: translate3d(0, 0.04em, 0) rotate(3.2deg);
+    transition-delay: 60ms;
+  }
+
+  .hero[data-lifted] .papers-left {
+    transform: translate3d(-3vw, -3vh, 0) rotate(-3deg);
+  }
+
+  .hero[data-lifted] .papers-right {
+    transform: translate3d(3vw, -3vh, 0) rotate(3deg);
+  }
+
+  /* While the pointer moves, the copies trail it (see the script). They are
+     in view only then, and fade once they have settled back underneath. */
+  .hero[data-trail] .copy-2,
+  .hero[data-trail] .copy-3 {
+    opacity: 1;
+    will-change: translate;
+    transition:
+      opacity 120ms var(--ease-out),
+      transform 1100ms var(--ease-out);
+  }
+
+  .hero[data-lifted] .explore {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Once the first sheet is well over the cover, the cover recedes. */
+  .hero[data-covered] .lede {
+    opacity: 0;
+  }
+
+  .hero[data-covered] .hero-dim {
+    opacity: 0.6;
+  }
+
+  /* Tablets and phones: no room beside the slogan, so the papers fan up from
+     the bottom of the cover instead, cropped by the first sheet, and the
+     cover holds to its content. */
+  @media (max-width: 900px) {
+    .hero {
+      --side: 0px;
+      --paper-w: min(58vw, 23rem);
+      --fan-h: clamp(9rem, 34vw, 15rem);
+      --stage-rest: calc(13.25rem + var(--fan-h));
+      min-height: 0;
+      padding-bottom: calc(var(--peek) + var(--fan-h));
+    }
+    .stage {
+      align-self: start;
+    }
+    .papers {
+      top: auto;
+      bottom: calc(var(--peek) - 1rem);
+      height: var(--fan-h);
+    }
+    .papers-left {
+      left: calc(50% - var(--paper-w) + 2rem);
+    }
+    .papers-right {
+      right: calc(50% - var(--paper-w) + 2rem);
+    }
+    .paper-front {
+      top: 22%;
+    }
+    .paper-back {
+      top: 6%;
+    }
+  }
+
+  @media (max-width: 760px) {
+    /* Phones scroll the cover in natural flow, and the headline only has to
+       fit the width. */
+    .hero {
+      --fs: var(--fit-w);
+      position: relative;
+      padding-top: calc(var(--nav-h) + 1.25rem);
+    }
+    .hero[data-covered] .lede {
+      opacity: 1;
+    }
+    .hero[data-covered] .hero-dim {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slogan,
+    .copy-2,
+    .copy-3,
+    .papers,
+    .lede,
+    .explore,
+    .flow,
+    .hero-dim {
+      transition: none;
+    }
+
+    :global(.js) .copy-1 .line > span,
+    :global(.js) :is(.lede, .explore, .paper),
+    .ink {
+      animation: none;
+    }
+
+    .ink {
+      transform: none;
+    }
+
+    .copy-2,
+    .copy-3 {
+      display: none;
+    }
+
+    .hero[data-lifted] :is(.slogan, .papers-left, .papers-right) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Two moments, read from an IntersectionObserver rather than per-frame
+  // scroll math: "lifted" as soon as the reader starts scrolling, "covered"
+  // once the first sheet is about halfway over the cover.
+  const hero = document.querySelector<HTMLElement>('.hero')!;
+  const sentinel = document.querySelector<HTMLElement>('.hero-sentinel');
+
+  if (sentinel) {
+    // The sentinel is 80svh tall and starts at the top of the page, so its
+    // visible ratio is 1 - scrollY / 80svh.
+    const LIFT = 0.95; // about 4svh of scroll
+    const COVER = 0.45; // about 44svh of scroll
+    new IntersectionObserver(
+      ([entry]) => {
+        const r = entry.isIntersecting ? entry.intersectionRatio : 0;
+        hero.toggleAttribute('data-lifted', r < LIFT);
+        hero.toggleAttribute('data-covered', r < COVER);
+      },
+      { threshold: [COVER, LIFT, 1] },
+    ).observe(sentinel);
+  }
+
+  // The cover follows the hand, on critically damped springs (one per axis).
+  // The carbon copies are tied to the pointer, the triplicate looser than the
+  // duplicate, and only their lag shows, soft-clamped to a fraction of an em,
+  // so a moving pointer leaves them trailing behind the original and they
+  // settle back under it when it stops. The papers lean away from the pointer,
+  // nearer sheets further, for a little depth.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    type Spring = { el: HTMLElement; response: number; x: number; y: number; vx: number; vy: number };
+    const title = hero.querySelector<HTMLElement>('.slogan')!;
+    const copies = [
+      { el: hero.querySelector<HTMLElement>('.copy-2')!, response: 0.3, reach: 0.09 },
+      { el: hero.querySelector<HTMLElement>('.copy-3')!, response: 0.5, reach: 0.16 },
+    ].map((l) => ({ ...l, x: 0, y: 0, vx: 0, vy: 0 }));
+    const papers = [...hero.querySelectorAll<HTMLElement>('.paper')].map((el) => ({
+      el,
+      response: 0.7,
+      depth: Number(el.dataset.depth),
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+    }));
+    const GAIN = 0.35; // pointer travel to spring-target travel
+    let tx = 0;
+    let ty = 0;
+    let px = 0; // pointer across the screen, -1 to 1 from the centre
+    let py = 0;
+    let em = 0;
+    let raf = 0;
+    let last = 0;
+    let tracking = false;
+
+    // Semi-implicit Euler on a critically damped spring; true while it moves.
+    const spring = (s: Spring, toX: number, toY: number, dt: number) => {
+      const w = (2 * Math.PI) / s.response;
+      s.vx += (-w * w * (s.x - toX) - 2 * w * s.vx) * dt;
+      s.vy += (-w * w * (s.y - toY) - 2 * w * s.vy) * dt;
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      return Math.hypot(s.x - toX, s.y - toY) > 0.3 || Math.hypot(s.vx, s.vy) > 3;
+    };
+
+    const step = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 1 / 30);
+      last = now;
+      let moving = false;
+      for (const l of copies) {
+        if (spring(l, tx, ty, dt)) moving = true;
+        const max = l.reach * em;
+        const ox = max * Math.tanh((l.x - tx) / max);
+        const oy = max * Math.tanh((l.y - ty) / max);
+        l.el.style.translate = `${ox.toFixed(2)}px ${oy.toFixed(2)}px`;
+      }
+      for (const p of papers) {
+        if (spring(p, -px * p.depth, -py * p.depth, dt)) moving = true;
+        p.el.style.translate = `${p.x.toFixed(2)}px ${p.y.toFixed(2)}px`;
+      }
+      if (moving) {
+        raf = requestAnimationFrame(step);
+      } else {
+        raf = 0;
+        hero.removeAttribute('data-trail');
+        for (const l of copies) l.el.style.translate = '';
+      }
+    };
+
+    const wake = () => {
+      hero.setAttribute('data-trail', '');
+      if (raf) return;
+      em = parseFloat(getComputedStyle(title).fontSize);
+      last = performance.now();
+      raf = requestAnimationFrame(step);
+    };
+
+    hero.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return;
+      const nx = e.clientX * GAIN;
+      const ny = e.clientY * GAIN;
+      // First contact moves the springs with the target, so nothing jumps.
+      if (!tracking) {
+        tracking = true;
+        for (const l of copies) {
+          l.x += nx - tx;
+          l.y += ny - ty;
+        }
+      }
+      tx = nx;
+      ty = ny;
+      px = (e.clientX / innerWidth) * 2 - 1;
+      py = (e.clientY / innerHeight) * 2 - 1;
+      wake();
+    });
+    hero.addEventListener('pointerleave', () => {
+      tracking = false;
+      px = 0;
+      py = 0;
+      wake();
+    });
+
+    // Once, as the last line lands: a nudge down and out through the stack,
+    // so the copies show they are there before settling back underneath.
+    setTimeout(() => {
+      if (hero.hasAttribute('data-lifted')) return;
+      em = parseFloat(getComputedStyle(title).fontSize);
+      for (const l of copies) {
+        // A critically damped spring kicked from rest peaks at v / (w * e).
+        const v = 0.6 * l.reach * em * ((2 * Math.PI) / l.response) * Math.E;
+        l.vx += v * 0.8;
+        l.vy += v * 0.6;
+      }
+      wake();
+    }, 1000);
+  }
+</script>

@@ -1,0 +1,149 @@
+---
+import Icon from './ui/Icon.astro';
+import { site } from '../data/site';
+
+const faqs = [
+  {
+    q: 'Where does FlowX365 run?',
+    a: `Use FlowX365 in your web browser or on Android.`,
+  },
+  {
+    q: 'How do people sign in?',
+    a: 'Sign in with your email and password or with Google. Your administrator creates user accounts, so registration is managed within your business.',
+  },
+  {
+    q: 'Does it handle GST?',
+    a: 'Documents carry HSN codes and split tax into CGST and SGST, or IGST for inter-state supply, with the amount in words. Invoices print in the statutory boxed GST format.',
+  },
+  {
+    q: 'Can we get our data out?',
+    a: 'Export list data to Excel or CSV, and print documents as PDFs.',
+  },
+  {
+    q: 'Does it work with attendance machines?',
+    a: 'FlowX365 receives attendance records from the eSSL X2008 biometric terminal. At 9 PM each night, it calculates half days, while approved field visits count as full days.',
+  },
+  {
+    q: 'Can it send emails for us?',
+    a: 'The planner emails a daily agenda at 7:30 AM, meeting reminders and an evening summary of overdue items. You can edit the wording of these emails in settings.',
+  },
+  {
+    q: 'Can we have more than one warehouse?',
+    a: 'Yes. Track stock separately for each warehouse, transfer items between warehouses and see where each item is stored.',
+  },
+  {
+    q: 'Who makes FlowX365?',
+    a: `${site.maker}.`,
+  },
+];
+---
+
+<section class="sheet details" id="details" data-copy="triplicate" data-nav="light" data-chapter="No. 09 · Details" aria-labelledby="details-title">
+  <span class="perf" aria-hidden="true" style="--hole: var(--duplicate)"></span>
+  <div class="stub" aria-hidden="true"><span class="serial">No. 09 · Triplicate</span></div>
+
+  <div class="sheet-inner layout">
+    <h2 class="display-l" id="details-title" data-reveal="mask">The details.</h2>
+
+    <div class="list">
+      {
+        faqs.map((f, i) => (
+          <details name="faq" open={i === 0}>
+            <summary>
+              <span>{f.q}</span>
+              <Icon name="chevron" size={20} />
+            </summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .details {
+    padding: var(--section) 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 2.5rem clamp(2rem, 6vw, 7rem);
+    align-items: start;
+  }
+
+  .layout .display-l {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .list {
+    border-top: 2px solid var(--ink);
+  }
+
+  details {
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 4rem;
+    padding: 1.1rem 0;
+    font-size: var(--step-1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary :global(svg) {
+    flex: none;
+    transition: transform 250ms var(--ease-out);
+  }
+
+  details[open] summary :global(svg) {
+    transform: rotate(180deg);
+  }
+
+  details p {
+    padding: 0 0 1.5rem;
+    max-width: 38em;
+    color: var(--ink-2);
+    font-size: var(--step-0);
+  }
+
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 300ms var(--ease-out),
+      content-visibility 300ms allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+  }
+
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .layout .display-l {
+      position: static;
+    }
+  }
+</style>

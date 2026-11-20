@@ -1,0 +1,521 @@
+---
+const highlights = [
+  {
+    title: 'Dedicated Customer Databases',
+    description: 'Each customer has a separate database environment to help keep business information isolated.',
+  },
+  {
+    title: 'Data Encryption',
+    description: 'Encryption controls help protect sensitive business information.',
+  },
+  {
+    title: 'Customer Data Isolation',
+    description: 'Separate customer environments help reduce the risk of unauthorized cross-customer access.',
+  },
+  {
+    title: 'Security From Day One',
+    description: 'Data protection is considered from the start of your ERP deployment.',
+  },
+  {
+    title: 'Secure Business Operations',
+    description: 'Manage sales, purchasing, inventory, accounts, and HRMS with security in mind.',
+  },
+];
+
+// Each point carries its own light ground, mixed from the sheet palette.
+const tints = [
+  'color-mix(in srgb, var(--carbon) 12%, var(--original))',
+  'color-mix(in srgb, var(--triplicate) 55%, var(--original))',
+  'color-mix(in srgb, var(--duplicate) 60%, var(--original))',
+  'color-mix(in srgb, var(--cover-high) 10%, var(--original))',
+  'color-mix(in srgb, color-mix(in srgb, var(--triplicate) 45%, var(--duplicate)) 60%, var(--original))',
+];
+---
+
+<section
+  class="sheet security"
+  id="security"
+  data-nav="light"
+  data-chapter="Enterprise data security"
+  aria-labelledby="security-title"
+>
+  <span class="perf" aria-hidden="true"></span>
+  <div class="stub" aria-hidden="true"><span class="serial">Security · Original</span></div>
+
+  <div class="sheet-inner">
+    <header class="security-head">
+      <p class="eyebrow form-head" data-reveal>Enterprise Data Security</p>
+      <h2 class="display-l" id="security-title" data-reveal="mask">
+        Enterprise-Grade Data Security. Built In From Day One.
+      </h2>
+    </header>
+
+    <div class="story">
+      <h3 class="display-m" data-reveal>Every Customer. A Dedicated Database. Security From Day One.</h3>
+
+      <div class="intro-copy">
+        <p class="lede" data-reveal style="--i: 1">
+          FlowX365 ERP is designed to give every customer a dedicated database, helping keep
+          business information separate from other customer environments. Combined with database
+          encryption and appropriate security controls, this approach supports data confidentiality
+          and helps protect sensitive business information against unauthorized access.
+        </p>
+        <p class="lede" data-reveal style="--i: 2">
+          From sales and purchasing to inventory, accounts, and HRMS, your business operates within
+          its dedicated data environment, with security considered from the foundation of your ERP
+          deployment.
+        </p>
+      </div>
+    </div>
+
+    <section
+      class="layers"
+      data-nav="dark"
+      data-chapter="Enterprise data security"
+      aria-labelledby="security-layers-title"
+      data-layers
+    >
+      <div class="layers-text">
+        <div class="layers-head">
+          <h3 class="layers-title display-l" id="security-layers-title" data-reveal="mask">
+            <span>Security at</span> <span>Every Layer</span>
+          </h3>
+        </div>
+
+        <ol class="layer-index">
+          {
+            highlights.map((highlight, i) => (
+              <li class="layer" data-active={i === 0 ? '' : undefined} style={`--tint: ${tints[i]}`}>
+                <div class="layer-row" data-reveal style={`--i: ${i + 1}`}>
+                  <span class="serial index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <div class="layer-copy">
+                    <h4>
+                      <button type="button" aria-pressed={i === 0 ? 'true' : 'false'}>
+                        {highlight.title}
+                      </button>
+                    </h4>
+                    <p>{highlight.description}</p>
+                  </div>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <p class="closing display-m" data-reveal>
+          <span>Your Business Data.</span> <span>Your Dedicated Database.</span> <span>Your Security.</span>
+        </p>
+      </div>
+    </section>
+  </div>
+</section>
+
+<style>
+  .security {
+    --hole: var(--cover);
+    margin-top: calc(-1 * clamp(3.5rem, 2.8rem + 2vw, 5rem));
+    padding: clamp(4.5rem, 3rem + 6vw, 9rem) 0 0;
+    z-index: 1;
+    box-shadow: 0 -30px 60px -20px rgb(0 0 0 / 0.45);
+  }
+
+  .security-head {
+    max-width: 80rem;
+  }
+
+  .eyebrow {
+    color: var(--ink-3);
+    font-size: 0.75rem;
+    margin-bottom: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .security-head .display-l {
+    max-width: 15ch;
+  }
+
+  .story {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(22rem, 1.15fr);
+    gap: 2.5rem clamp(3rem, 7vw, 8rem);
+    align-items: start;
+    margin-top: clamp(4rem, 8vw, 8rem);
+  }
+
+  .story > h3 {
+    max-width: 14ch;
+  }
+
+  .intro-copy {
+    max-width: 48rem;
+  }
+
+  .intro-copy .lede {
+    color: var(--ink-2);
+    max-width: none;
+  }
+
+  .intro-copy .lede + .lede {
+    margin-top: 1.15em;
+  }
+
+  /* The index sits on a full-bleed band of Binding Navy that runs to the end
+     of the sheet, so the next sheet slides over navy. Inks come from the cover
+     palette; the current row keeps its light ground and paper inks. */
+  .layers {
+    --l-fg: var(--on-cover);
+    --l-fg-2: var(--on-cover-2);
+    --l-fg-3: var(--on-cover-3);
+    --l-rule: var(--cover-rule);
+    position: relative;
+    z-index: 1;
+    margin: clamp(3.5rem, 2rem + 5vw, 8rem) calc(-1 * var(--gutter)) 0
+      calc(-1 * (var(--stub) + var(--gutter)));
+    padding: clamp(4rem, 2rem + 6vw, 8rem) var(--gutter) var(--section)
+      calc(var(--stub) + var(--gutter));
+    background: var(--cover);
+    color: var(--on-cover);
+  }
+
+  /* Security at Every Layer: the index scrolls on the left while the headline
+     holds its place on the right. The current row is the one at the reading
+     line or the one last chosen. */
+  .layers-text {
+    --title-size: min(var(--display-l), clamp(3rem, 0.3rem + 4.4vw, 7rem));
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 0 clamp(2.5rem, 5vw, 6rem);
+    align-items: start;
+  }
+
+  /* The headline starts level with row 01, rises with it, then holds the
+     centre of the space below the nav (two lines at the .display-l 0.94
+     line-height). */
+  .layers-head {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: center;
+    position: sticky;
+    --head-pad: clamp(1.4rem, 2.4vw, 2.1rem);
+    top: calc((100vh + var(--nav-h)) / 2 - 0.94 * var(--title-size) - var(--head-pad));
+    top: calc((100svh + var(--nav-h)) / 2 - 0.94 * var(--title-size) - var(--head-pad));
+    padding-top: var(--head-pad);
+  }
+
+  .layer-index,
+  .closing {
+    grid-column: 1;
+  }
+
+  /* Type comes from .display-l; the column bounds the size. */
+  .layers-title {
+    font-size: var(--title-size);
+  }
+
+  .layers-title span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .layer-index {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .layer {
+    position: relative;
+    border-top: 1px solid var(--l-rule);
+  }
+
+  :global(.js) .layer {
+    cursor: pointer;
+  }
+
+  .layer:last-child {
+    border-bottom: 1px solid var(--l-rule);
+  }
+
+  /* The row's own tint, shown while it is the current layer. */
+  .layer::after {
+    content: '';
+    position: absolute;
+    inset: 0 calc(-1 * clamp(0.75rem, 1.5vw, 1.25rem));
+    background: var(--tint);
+    opacity: 0;
+    transition: opacity 280ms ease;
+    z-index: -1;
+  }
+
+  /* Current-layer rule drawn across the top edge. */
+  .layer::before {
+    content: '';
+    position: absolute;
+    inset: -1px 0 auto;
+    height: 2px;
+    background: var(--l-fg);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 420ms var(--ease-out);
+  }
+
+  .layer[data-active] {
+    --l-fg: var(--ink);
+    --l-fg-2: var(--ink-2);
+    --l-fg-3: var(--ink-3);
+  }
+
+  .layer[data-active]::after {
+    opacity: 1;
+  }
+
+  .layer[data-active]::before {
+    transform: none;
+  }
+
+  .layer-row {
+    display: grid;
+    grid-template-columns: clamp(2.75rem, 4vw, 4rem) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    min-height: clamp(9rem, 21svh, 12.5rem);
+    padding: clamp(1.4rem, 2.4vw, 2.1rem) 0;
+  }
+
+  .index {
+    position: relative;
+    color: var(--l-fg-3);
+    padding-top: 0.45rem;
+  }
+
+  /* Live orange marks only the current state. */
+  .index::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -0.2rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--live);
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .layer[data-active] .index {
+    color: var(--l-fg);
+  }
+
+  .layer[data-active] .index::after {
+    opacity: 1;
+  }
+
+  .layer h4 {
+    font-size: var(--step-2);
+    font-weight: var(--weight-bold);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .layer button {
+    all: unset;
+    cursor: pointer;
+    color: var(--l-fg-2);
+    text-wrap: balance;
+    border-radius: 2px;
+    transition: color 200ms ease;
+  }
+
+  .layer button:focus-visible {
+    outline: 2px solid var(--live);
+    outline-offset: 4px;
+  }
+
+  .layer[data-active] button {
+    color: var(--l-fg);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .layer button:hover {
+      color: var(--l-fg);
+    }
+  }
+
+  .layer-copy p {
+    color: var(--l-fg-2);
+    transition: color 200ms ease;
+    font-size: var(--step-0);
+    line-height: 1.55;
+    margin-top: 0.7rem;
+    max-width: 30rem;
+    text-wrap: pretty;
+  }
+
+  /* Closes the index under row 05. */
+  .closing {
+    margin-top: clamp(3.5rem, 6vw, 6rem);
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 2px solid var(--on-cover);
+    font-size: min(var(--display-m), clamp(1.875rem, 0.8rem + 2vw, 3.25rem));
+  }
+
+  .closing span {
+    display: block;
+  }
+
+  @media (min-width: 761px) {
+    .intro-copy .lede {
+      hyphens: auto;
+      text-align: justify;
+      text-align-last: left;
+      text-justify: inter-word;
+      text-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .story {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .story > h3 {
+      max-width: 16ch;
+    }
+
+    .intro-copy .lede {
+      hyphens: none;
+      text-align: left;
+      text-align-last: auto;
+      text-wrap: pretty;
+    }
+
+    .layers-text {
+      --title-size: min(var(--display-l), clamp(2.25rem, 0.4rem + 4.3vw, 3.5rem));
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 0 clamp(1.75rem, 4vw, 3rem);
+    }
+
+    .layer-row {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+      min-height: clamp(8rem, 18svh, 11rem);
+    }
+
+    .closing {
+      font-size: clamp(1.625rem, 0.4rem + 2.5vw, 2.25rem);
+    }
+
+    .layer h4 {
+      font-size: var(--step-1);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .security {
+      padding-top: 4.5rem;
+    }
+
+    .story {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 3.5rem;
+    }
+
+    .story > h3 {
+      max-width: 16ch;
+    }
+
+    /* Phones: headline first, then the rows, all in natural flow. */
+    .layers-text {
+      --title-size: min(var(--display-l), clamp(2.5rem, 12.5vw, 4rem));
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .layers-head {
+      grid-column: 1;
+      grid-row: auto;
+      justify-self: stretch;
+      position: static;
+      padding-top: 0;
+    }
+
+    .layer-index {
+      margin-top: 2.5rem;
+    }
+
+    .closing span {
+      text-wrap: balance;
+    }
+
+    /* Rows stack in reading order here, so no row is singled out and every
+       row keeps the cover inks. */
+    .layer[data-active] {
+      --l-fg: var(--on-cover);
+      --l-fg-2: var(--on-cover-2);
+      --l-fg-3: var(--on-cover-3);
+    }
+
+    .layer::after,
+    .layer::before,
+    .index::after {
+      display: none;
+    }
+
+    .layer .index,
+    .layer button {
+      color: var(--l-fg);
+    }
+
+    .layer-row {
+      min-height: 0;
+      padding: 1.5rem 0 1.25rem;
+    }
+
+    /* The closing statement's ink rule ends the index here. */
+    .layer:last-child {
+      border-bottom: 0;
+    }
+
+    .closing {
+      margin-top: 1.5rem;
+      font-size: clamp(1.75rem, 8.4vw, 2.5rem);
+    }
+  }
+</style>
+
+<script>
+  // One selection model for the layer index: the row at the reading line is
+  // current, and choosing a row (click, tap, keyboard) makes it current too.
+  const layers = document.querySelector<HTMLElement>('[data-layers]');
+
+  if (layers) {
+    const rows = [...layers.querySelectorAll<HTMLElement>('.layer')];
+    let current = 0;
+
+    const setActive = (i: number) => {
+      if (i === current) return;
+      current = i;
+      rows.forEach((row, r) => {
+        row.toggleAttribute('data-active', r === i);
+        row.querySelector('button')?.setAttribute('aria-pressed', String(r === i));
+      });
+    };
+
+    rows.forEach((row, i) => {
+      row.addEventListener('click', () => setActive(i));
+      row.querySelector('button')?.addEventListener('focus', () => setActive(i));
+    });
+
+    // Phones read the rows as a plain sequence, so the reading line only
+    // drives the index on wider screens.
+    const wide = matchMedia('(min-width: 761px)');
+    const reading = new IntersectionObserver(
+      (entries) => {
+        if (!wide.matches) return;
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(rows.indexOf(entry.target as HTMLElement));
+        }
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    rows.forEach((row) => reading.observe(row));
+  }
+</script>

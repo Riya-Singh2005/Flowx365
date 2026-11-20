@@ -1,0 +1,3 @@
+# Kept in the repo as image provenance, not served to visitors.
+*.webp.json
+.assetsignore

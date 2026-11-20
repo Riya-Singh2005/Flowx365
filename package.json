@@ -1,0 +1,35 @@
+{
+  "name": "flowx365-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "lint": "eslint .",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "og": "node tools/make-og.mjs && magick -density 96 tools/og.svg -strip -depth 8 -define png:compression-level=9 public/og.png"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "astro": "^7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-astro": "^1.7.0",
+    "fontkit": "^2.0.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "wawoff2": "^2.0.1",
+    "wrangler": "^4.165.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

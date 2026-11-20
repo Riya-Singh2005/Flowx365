@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import RateCover from '../components/pricing/RateCover.astro';
+import Plans from '../components/pricing/Plans.astro';
+import AddOns from '../components/pricing/AddOns.astro';
+import Terms from '../components/pricing/Terms.astro';
+import Why from '../components/pricing/Why.astro';
+import PricingFaq from '../components/pricing/PricingFaq.astro';
+import Close from '../components/Close.astro';
+
+// The rate card. Prices and plan inclusions are final (owner, 2026-11-13);
+// see PRICING.md. Indexed and listed in the sitemap; /pricing.html redirects
+// to /pricing on the host.
+---
+
+<Base
+  title="FlowX365 - Pricing"
+  description="FlowX365 plans for every stage of your business: Basic, Professional and Enterprise, billed monthly or annually."
+  canonicalPath="/pricing"
+>
+  <Nav current="pricing" />
+  <main id="main">
+    <RateCover />
+    <Plans />
+    <AddOns />
+    <Terms />
+    <Why />
+    <PricingFaq />
+    <Close onHome={false} hole="duplicate" compact />
+  </main>
+</Base>
+
+<script>
+  import { initReveals } from '../scripts/reveal';
+
+  initReveals();
+  document.documentElement.classList.add('js');
+</script>

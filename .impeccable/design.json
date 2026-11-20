@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-24T08:21:06+00:00",
+  "title": "Design System: FlowX365",
+  "extensions": {
+    "colorMeta": {
+      "live": {
+        "role": "primary",
+        "displayName": "Live Orange",
+        "canonical": "#f5820a",
+        "tonalRamp": [
+          "#3d1d00",
+          "#6b3300",
+          "#9c4a00",
+          "#cc6200",
+          "#f5820a",
+          "#ff9d45",
+          "#ffc18a",
+          "#ffe3c7"
+        ]
+      },
+      "carbon": {
+        "role": "secondary",
+        "displayName": "Carbon Blue",
+        "canonical": "#2f3296",
+        "tonalRamp": [
+          "#0d0e33",
+          "#171a57",
+          "#23267a",
+          "#2f3296",
+          "#4a4fb8",
+          "#7478cf",
+          "#a5a8e2",
+          "#d6d7f2"
+        ]
+      },
+      "sheet-duplicate": {
+        "role": "tertiary",
+        "displayName": "Duplicate Pink",
+        "canonical": "#f4c7d2",
+        "tonalRamp": [
+          "#4a1f2a",
+          "#7a3345",
+          "#a84b62",
+          "#cf7189",
+          "#e59bae",
+          "#f4c7d2",
+          "#f9dde4",
+          "#fdf1f4"
+        ]
+      },
+      "sheet-triplicate": {
+        "role": "tertiary",
+        "displayName": "Triplicate Canary",
+        "canonical": "#f4e07e",
+        "tonalRamp": [
+          "#3f360c",
+          "#665818",
+          "#8f7c22",
+          "#b8a031",
+          "#dcc353",
+          "#f4e07e",
+          "#f8eaaa",
+          "#fcf6d8"
+        ]
+      },
+      "cover": {
+        "role": "neutral",
+        "displayName": "Binding Navy",
+        "canonical": "#0f1520",
+        "tonalRamp": [
+          "#0b101b",
+          "#0f1520",
+          "#141b30",
+          "#1a2340",
+          "#2a3556",
+          "#46526f",
+          "#8a93a8",
+          "#b9c0d0"
+        ]
+      },
+      "sheet-original": {
+        "role": "neutral",
+        "displayName": "Original White",
+        "canonical": "#f7f8fa",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#5b6472",
+          "#8a93a8",
+          "#b9c0d0",
+          "#dfe3ea",
+          "#eef0f3",
+          "#f7f8fa"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#111827",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#5b6472",
+          "#6b7280",
+          "#9ca3af",
+          "#d1d5db"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Cover display",
+        "purpose": "Opening and closing statements on navy covers only."
+      },
+      "headline": {
+        "displayName": "Sheet headline",
+        "purpose": "One per sheet, sentence case, 11-15ch."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Step titles, questions, current-event titles."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "A sheet's explanatory paragraph."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Lists, answers, notes."
+      },
+      "label": {
+        "displayName": "Form header",
+        "purpose": "Printed-form caps: particulars, meta lines, references."
+      },
+      "serial": {
+        "displayName": "Serial",
+        "purpose": "Document numbers, times, serials and data labels only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet-over-cover",
+        "value": "0 -30px 60px -20px rgb(0 0 0 / 0.45)",
+        "purpose": "First sheet sliding over the navy cover."
+      },
+      {
+        "name": "stacked-sheet",
+        "value": "0 -24px 48px -24px rgb(15 21 32 / 0.35)",
+        "purpose": "Each question sheet over the one before."
+      },
+      {
+        "name": "document",
+        "value": "0 1px 1px rgb(0 0 0 / 0.12), 0 30px 60px -24px rgb(0 0 0 / 0.55)",
+        "purpose": "Paper documents and printed PDFs."
+      },
+      {
+        "name": "app-window",
+        "value": "0 1px 2px rgb(15 21 32 / 0.08), 0 24px 60px -18px rgb(15 21 32 / 0.35)",
+        "purpose": "Recreated product screens."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Entrances, reveals, state flips."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Mask reveals of headlines, theme crossfades."
+      },
+      {
+        "name": "ease-sheet",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "A sheet lifting off the pad (900ms) and the chain trail filling."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.97) over 140ms",
+        "purpose": "Button and choice press feedback."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "User decision: no prefers-reduced-motion branch; all motion plays for everyone."
+      },
+      {
+        "name": "cover-lift",
+        "value": "triggered at ~4svh (lifted) and ~44svh (covered); transform 1100ms ease-out, opacity 350-700ms",
+        "purpose": "Carbon copies fan out once; the cover never scrubs with scroll, so it stays a flat layer while scrolling."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "560px"
+      },
+      {
+        "name": "stub",
+        "value": "760px"
+      },
+      {
+        "name": "stack",
+        "value": "900px"
+      },
+      {
+        "name": "product-stack",
+        "value": "960-1100px"
+      },
+      {
+        "name": "nav-links",
+        "value": "1080px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one live action: Request a demo.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Request a demo <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"m13 6 6 6-6 6\"/></svg></a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:.6em;min-height:3rem;padding:0 1.35rem;border-radius:10px;background:#f5820a;color:#111827;font-family:'Archivo Variable',Archivo,sans-serif;font-weight:650;font-variation-settings:'wdth' 106;text-decoration:none;transition:background-color 160ms ease,transform 140ms cubic-bezier(.23,1,.32,1)}.ds-btn:hover{background:#ff9426}.ds-btn:active{transform:scale(.97)}.ds-btn:focus-visible{outline:2px solid #f5820a;outline-offset:3px}"
+    },
+    {
+      "name": "Quiet Link",
+      "kind": "button",
+      "refersTo": "link-quiet",
+      "description": "Secondary path, such as \"Now write the same order once\". The site has no Sign in button.",
+      "html": "<a class=\"ds-quiet\" href=\"#\">Now write the same order once <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 17 17 7\"/><path d=\"M8 7h9v9\"/></svg></a>",
+      "css": ".ds-quiet{display:inline-flex;align-items:center;gap:.45em;min-height:3rem;font-family:'Archivo Variable',Archivo,sans-serif;font-weight:600;color:#111827;text-decoration:none}.ds-quiet svg{transition:transform 200ms cubic-bezier(.23,1,.32,1)}.ds-quiet:hover svg{transform:translateX(3px)}.ds-quiet:focus-visible{outline:2px solid #f5820a;outline-offset:3px}"
+    },
+    {
+      "name": "Sheet",
+      "kind": "custom",
+      "refersTo": "sheet-duplicate",
+      "description": "A chapter: full-bleed copy colour, perforated top edge, counterfoil stub with serial.",
+      "html": "<section class=\"ds-sheet\"><span class=\"ds-perf\"></span><div class=\"ds-stub\">No. 04 · Duplicate</div><h2 class=\"ds-h\">See which quotes became orders.</h2></section>",
+      "css": ".ds-sheet{position:relative;background:#f4c7d2;color:#111827;padding:3rem 2rem 3rem 7rem;font-family:'Archivo Variable',Archivo,sans-serif}.ds-perf{position:absolute;left:0;right:0;top:-6px;height:12px;background:radial-gradient(circle,#f7f8fa 3.2px,transparent 3.8px) 0 50%/14px 12px repeat-x}.ds-stub{position:absolute;top:0;bottom:0;left:0;width:5rem;border-right:1.5px dashed rgb(17 24 39 / .32);writing-mode:vertical-rl;transform:rotate(180deg);text-align:right;padding:2rem 0;font:500 .8125rem 'Geist Mono Variable',monospace;color:#6e3b4a}.ds-h{margin:0;font-weight:800;font-size:3rem;line-height:.94;letter-spacing:-.035em;font-variation-settings:'wdth' 112}"
+    },
+    {
+      "name": "Theme Choice",
+      "kind": "chip",
+      "refersTo": "choice-selected",
+      "description": "Segmented radios that work without script.",
+      "html": "<div class=\"ds-choices\"><label class=\"ds-choice\"><input type=\"radio\" name=\"t\" checked>Classic</label><label class=\"ds-choice\"><input type=\"radio\" name=\"t\">Professional Blue</label></div>",
+      "css": ".ds-choices{display:flex;gap:.5rem;font-family:'Archivo Variable',Archivo,sans-serif}.ds-choice{position:relative;display:inline-flex;align-items:center;min-height:3rem;padding:0 1.1rem;border:1.5px solid rgb(17 24 39 / .32);border-radius:10px;font-weight:600;cursor:pointer;transition:border-color 180ms ease,background-color 180ms ease}.ds-choice input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}.ds-choice:hover{border-color:#111827}.ds-choice:has(input:checked){background:#111827;border-color:#111827;color:#f7f8fa}.ds-choice:has(input:focus-visible){outline:2px solid #f5820a;outline-offset:3px}"
+    },
+    {
+      "name": "Carbon Chip",
+      "kind": "chip",
+      "refersTo": "carbon",
+      "description": "An inherited value, such as the lead id carried onto every document.",
+      "html": "<span class=\"ds-carbon\">AE/26-27/LD/031</span>",
+      "css": ".ds-carbon{display:inline-flex;padding:.1em .45em;border-radius:4px;background:rgb(47 50 150 / .1);color:#2f3296;font:500 .8125rem 'Geist Mono Variable',monospace}"
+    },
+    {
+      "name": "Quiet Navigation",
+      "kind": "nav",
+      "refersTo": "cover",
+      "description": "The bar after the cover lifts: brand, current sheet serial, contents, action.",
+      "html": "<nav class=\"ds-nav\"><strong>FlowX365</strong><span class=\"ds-where\">No. 02 · How it works</span><a class=\"ds-nav-cta\" href=\"#\">Request a demo</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;justify-content:space-between;height:4.25rem;padding:0 1.5rem;background:#f7f8fa;color:#111827;font-family:'Archivo Variable',Archivo,sans-serif}.ds-nav strong{font-weight:800;font-variation-settings:'wdth' 115}.ds-where{font:500 .8125rem 'Geist Mono Variable',monospace;color:#5b6472}.ds-nav-cta{background:#f5820a;color:#111827;border-radius:10px;padding:.6rem 1.1rem;font-weight:650;text-decoration:none}.ds-nav-cta:focus-visible{outline:2px solid #f5820a;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Triplicate Bill Book",
+    "overview": "The site is a bill book, the object every Indian business already writes in: a navy cover, numbered sheets, and carbon copies beneath each original. Write once on the top sheet and the impression passes through every copy. That is also what FlowX365 does with a quotation, a sales order, a delivery note and an invoice, so the metaphor carries the product's mechanism instead of decorating it.\n\nThe page reads like a stack of sheets slid over one another. Each chapter is a full-bleed sheet in one of the statutory copy colours, with a perforated top edge and a counterfoil stub down the left carrying its printed serial. Typography is editorial and very large: wide, heavy Archivo caps for covers, heavy sentence-case display for sheets, and a mono voice kept strictly for document numbers, times and serials. Density swings deliberately: huge statements and quiet whitespace, then a dense, faithful rebuild of the real application.",
+    "keyCharacteristics": [
+      "Navy covers bracket the book (first viewport and close); sheets in between.",
+      "Flat colour fields at page scale. No gradients, glass or glow on the site's own chrome.",
+      "Carbon blue marks anything carried forward rather than typed.",
+      "One live colour, orange, for the primary action and the current state only.",
+      "Real product screens rebuilt from the app's own tokens, always labelled as illustrative data."
+    ],
+    "rules": [
+      {
+        "name": "The One Live Colour Rule",
+        "body": "Orange means \"act here\" or \"this is happening now\". Decorative orange, in a headline word, a highlighter or an ornament, is a defect.",
+        "section": "colors"
+      },
+      {
+        "name": "The Carbon Rule",
+        "body": "Carbon blue marks inheritance. If a value was typed on this document, it is ink; if it arrived from the document before, it is carbon.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tinted Grey Rule",
+        "body": "Secondary text on a coloured sheet takes that sheet's hue, never a neutral grey that drops below 4.5:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Is Data Rule",
+        "body": "Monospace sets document numbers, clock times, serials and data labels. Descriptive prose in mono is costume.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Eyebrow Rule",
+        "body": "Headings stand alone. Serials live in the counterfoil stub, never as a small label above a heading.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper Depth Rule",
+        "body": "Only paper and the app window cast shadows. Buttons, chips and text never do.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** make every chapter a sheet: full-bleed copy colour, perforated edge, stub serial.",
+      "**Do** set inherited values in carbon (#2f3296) and typed values in ink.",
+      "**Do** label every recreated product screen \"Illustrative data\" at 4.5:1 or better.",
+      "**Do** keep display headlines inside their column. Move a headline to full width rather than letting a word clip.",
+      "**Do** let scroll scenes explain something real: a document being made from another, stock moving, a working day passing."
+    ],
+    "donts": [
+      "**Don't** use orange for anything that is not the primary action or the current state.",
+      "**Don't** show the headline's copies at rest; a static offset reads as a drop shadow. They fan from the corner only while the cover lifts.",
+      "**Don't** put descriptive text in monospace, or put small labels above headings.",
+      "**Don't** use gradients, glass, glow or generic icon tiles in the site's own chrome.",
+      "**Don't** show a product capability the app does not ship (no AI; no ledger, banking, GST-return or budget modules today)."
+    ]
+  }
+}

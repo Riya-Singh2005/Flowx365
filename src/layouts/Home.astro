@@ -1,0 +1,95 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Security from '../components/Security.astro';
+import WhatIs from '../components/WhatIs.astro';
+import Chain from '../components/Chain.astro';
+import Crm from '../components/Crm.astro';
+import Tracker from '../components/Tracker.astro';
+import Stock from '../components/Stock.astro';
+import Print from '../components/Print.astro';
+import Day from '../components/Day.astro';
+import Questions from '../components/Questions.astro';
+import Details from '../components/Details.astro';
+import Close from '../components/Close.astro';
+
+// The homepage. Section addresses (/how-it-works) render this same page and
+// scroll to their section; their canonical is the homepage.
+interface Props {
+  canonicalPath?: string;
+}
+
+const { canonicalPath } = Astro.props;
+---
+
+<Base canonicalPath={canonicalPath}>
+  <Nav />
+  <main id="main">
+    <div class="cover-stack">
+      <div class="hero-sentinel" aria-hidden="true"></div>
+      <Hero />
+      <Security />
+      <WhatIs />
+    </div>
+    <Chain />
+    <Crm />
+    <Tracker />
+    <Stock />
+    <Print />
+    <Day />
+    <Questions />
+    <Details />
+    <Close />
+  </main>
+</Base>
+
+<style>
+  .cover-stack {
+    position: relative;
+  }
+
+  .hero-sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 80vh;
+    height: 80svh;
+    pointer-events: none;
+  }
+
+  /* Only primary homepage introductions receive the editorial justification.
+     Short labels, benefits, answers, metadata and product UI remain untouched. */
+  @media (min-width: 1081px) {
+    :global(#what .what-side > .lede),
+    :global(#chain .chain-intro > .lede),
+    :global(#product .copy > .lede),
+    :global(#tracker .head > .lede),
+    :global(#stock .copy > .lede),
+    :global(#print .copy > .lede),
+    :global(#day .day-intro > .lede),
+    :global(#demo .act > .lede) {
+      hyphens: auto;
+      text-align: justify;
+      text-align-last: left;
+      text-justify: inter-word;
+      text-wrap: wrap;
+    }
+  }
+</style>
+
+<script>
+  import { initReveals } from '../scripts/reveal';
+  import { scrollToPathSection, sectionForPath } from '../scripts/sections';
+
+  initReveals();
+  document.documentElement.classList.add('js');
+
+  // Opened at a section address: once laid out, scroll to that section.
+  if (sectionForPath(location.pathname) && !location.hash) {
+    if (document.readyState === 'complete') scrollToPathSection();
+    else addEventListener('load', () => scrollToPathSection(), { once: true });
+  }
+  // Back and Forward rely on the browser restoring each entry's scroll position.
+</script>

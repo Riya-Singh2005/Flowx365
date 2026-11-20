@@ -1,0 +1,404 @@
+---
+import Icon from '../ui/Icon.astro';
+import type { ProductGroup } from '../../data/pricing';
+
+interface Props {
+  /** The plan whose products the dialog describes (Enterprise). */
+  planName: string;
+  products: ProductGroup[];
+}
+
+const { planName, products } = Astro.props;
+---
+
+<!-- One native dialog for every product. Each product's content is a template,
+     rendered at build time from src/data/pricing.ts and cloned in on open, so
+     the dialog never shows a previous product's content. showModal() makes the
+     page inert, traps focus and closes on Escape. -->
+<dialog class="product-dialog" id="product-dialog" aria-labelledby="product-dialog-title">
+  <div class="pd-shell" data-product-dialog-body></div>
+</dialog>
+
+{
+  products.map((product) => (
+    <template data-product-template={product.id}>
+      <header class="pd-head">
+        <div class="pd-head-copy">
+          <p class="pd-kicker">{planName} · Included product</p>
+          <h2 class="pd-title form-head" id="product-dialog-title">
+            {product.name}
+          </h2>
+          {product.intro && <p class="pd-intro">{product.intro}</p>}
+        </div>
+        <button class="pd-close" type="button" data-product-close aria-label={`Close ${product.name} details`}>
+          <Icon name="close" size={20} />
+        </button>
+      </header>
+      <div class="pd-body" tabindex="0" role="region" aria-label={`${product.name} modules`}>
+        <div class="pd-modules">
+          {product.modules.map((module) => {
+            const described = module.details.some((detail) => detail.description);
+            return (
+              <section class="pd-module" aria-labelledby={`pd-${product.id}-${module.id}`}>
+                <h3 class="pd-module-name form-head" id={`pd-${product.id}-${module.id}`}>
+                  {module.module}
+                </h3>
+                {module.marketingDescription && <p class="pd-marketing">{module.marketingDescription}</p>}
+                {module.details.length > 0 && (
+                  <ul class:list={['pd-list', { described }]}>
+                    {module.details.map((detail) => (
+                      <li>
+                        <Icon name="check" size={17} />
+                        <span>
+                          <strong>{detail.label}</strong>
+                          {detail.description && <span class="pd-desc">{detail.description}</span>}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            );
+          })}
+        </div>
+      </div>
+    </template>
+  ))
+}
+
+<style>
+  .product-dialog {
+    width: min(54rem, calc(100vw - 2rem));
+    max-width: none;
+    max-height: min(46rem, calc(100dvh - 2rem));
+    margin: auto;
+    padding: 0;
+    border: 1px solid rgb(247 248 250 / 0.24);
+    border-radius: 16px;
+    background: var(--original);
+    color: var(--ink);
+    overflow: hidden;
+    box-shadow: 0 2rem 6rem rgb(4 8 16 / 0.42);
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+    transition:
+      opacity 220ms var(--ease-out),
+      transform 300ms var(--ease-sheet),
+      overlay 300ms allow-discrete,
+      display 300ms allow-discrete;
+  }
+
+  .product-dialog[open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    .product-dialog[open] {
+      opacity: 0;
+      transform: translateY(14px) scale(0.985);
+    }
+  }
+
+  .product-dialog::backdrop {
+    background: rgb(5 9 18 / 0.76);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transition:
+      opacity 220ms var(--ease-out),
+      overlay 300ms allow-discrete,
+      display 300ms allow-discrete;
+  }
+
+  .product-dialog[open]::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .product-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  /* Head fixed, body scrolls: the title and the close button stay in reach. */
+  .pd-shell {
+    display: flex;
+    flex-direction: column;
+    max-height: min(46rem, calc(100dvh - 2rem));
+  }
+
+  /* The cloned template's nodes are not scoped to this component's class
+     hash, so every rule below them reaches in through :global. */
+  .pd-shell :global(.pd-head) {
+    flex: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 1.75rem);
+    background: var(--cover);
+    color: var(--on-cover);
+  }
+
+  .pd-shell :global(.pd-head-copy) {
+    min-width: 0;
+  }
+
+  .pd-shell :global(.pd-kicker) {
+    margin-bottom: 0.6rem;
+    color: var(--live);
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: var(--track-mono-caps);
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .pd-shell :global(.pd-title) {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+    font-weight: var(--weight-heavy);
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  .pd-shell :global(.pd-intro) {
+    max-width: 40rem;
+    margin-top: 0.75rem;
+    color: var(--on-cover-2);
+    font-size: 1rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .pd-shell :global(.pd-close) {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid rgb(247 248 250 / 0.3);
+    border-radius: 50%;
+    background: rgb(247 248 250 / 0.08);
+    color: var(--on-cover);
+    cursor: pointer;
+    transition:
+      background-color 180ms var(--ease-out),
+      transform 180ms var(--ease-out);
+  }
+
+  .pd-shell :global(.pd-close:active) {
+    transform: scale(0.94);
+  }
+
+  .pd-shell :global(.pd-close:focus-visible) {
+    outline: 2px solid var(--live);
+    outline-offset: 3px;
+  }
+
+  .pd-shell :global(.pd-body) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1.25rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.25rem);
+    scrollbar-color: var(--rule-strong) transparent;
+    scrollbar-width: thin;
+  }
+
+  .pd-shell :global(.pd-body:focus) {
+    outline: none;
+  }
+
+  .pd-shell :global(.pd-body:focus-visible) {
+    outline: 2px solid var(--live);
+    outline-offset: -4px;
+  }
+
+  /* Two columns of modules; each module keeps its own rule-topped block. */
+  .pd-shell :global(.pd-modules) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 2.25rem;
+    align-items: start;
+  }
+
+  .pd-shell :global(.pd-module) {
+    padding-top: 0.85rem;
+    border-top: 2px solid var(--ink);
+  }
+
+  .pd-shell :global(.pd-module-name) {
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: var(--weight-heavy);
+    font-variation-settings: 'wdth' var(--wdth-caps);
+    letter-spacing: 0.045em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .pd-shell :global(.pd-marketing) {
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .pd-shell :global(.pd-list) {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pd-shell :global(.pd-list.described) {
+    gap: 0.85rem;
+  }
+
+  .pd-shell :global(.pd-list li) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.55rem;
+    align-items: start;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .pd-shell :global(.pd-list li svg) {
+    margin-top: 0.1rem;
+    color: var(--ink);
+  }
+
+  .pd-shell :global(.pd-list strong) {
+    display: block;
+    color: var(--ink);
+    font-weight: var(--weight-bold);
+    font-variation-settings: 'wdth' var(--wdth-ui);
+  }
+
+  .pd-shell :global(.pd-desc) {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pd-shell :global(.pd-close:hover) {
+      background: rgb(247 248 250 / 0.16);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .pd-shell :global(.pd-modules) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  /* Phones: a full-screen sheet, the close button top right in the head. */
+  @media (max-width: 768px) {
+    .product-dialog {
+      width: 100vw;
+      height: 100dvh;
+      max-height: 100dvh;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .pd-shell {
+      height: 100dvh;
+      max-height: 100dvh;
+    }
+
+    .pd-shell :global(.pd-head) {
+      gap: 1rem;
+      padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem 1.25rem;
+    }
+
+    .pd-shell :global(.pd-title) {
+      font-size: clamp(1.125rem, 6.4vw, 2rem);
+      overflow-wrap: anywhere;
+    }
+
+    .pd-shell :global(.pd-intro) {
+      font-size: 0.9375rem;
+    }
+
+    .pd-shell :global(.pd-body) {
+      padding: 1.25rem 1.25rem max(1.75rem, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-dialog,
+    .product-dialog::backdrop,
+    .pd-shell :global(.pd-close) {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#product-dialog');
+  const body = dialog?.querySelector<HTMLElement>('[data-product-dialog-body]');
+  let trigger: HTMLElement | null = null;
+
+  function openProduct(button: HTMLElement) {
+    const id = button.dataset.productOpen;
+    const template = id ? document.querySelector<HTMLTemplateElement>(`template[data-product-template="${id}"]`) : null;
+    if (!dialog || !body || !template || dialog.open) return;
+    trigger = button;
+    // Replace, never append: the dialog always shows the product just chosen.
+    body.replaceChildren(template.content.cloneNode(true));
+    document.documentElement.classList.add('dialog-open');
+    dialog.showModal();
+    body.querySelector<HTMLElement>('.pd-body')?.scrollTo(0, 0);
+    body.querySelector<HTMLButtonElement>('[data-product-close]')?.focus();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-product-open]').forEach((button) => {
+    button.addEventListener('click', () => openProduct(button));
+  });
+
+  dialog?.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('[data-product-close]')) {
+      dialog.close();
+      return;
+    }
+    // A click on the backdrop lands on the dialog element outside its box.
+    const rect = dialog.getBoundingClientRect();
+    const outside =
+      event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    if (outside) dialog.close();
+  });
+
+  // showModal() makes the page inert but lets Tab leave for the browser's own
+  // controls; keep it cycling between the close button and the module list.
+  dialog?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab' || !body) return;
+    const stops = [...body.querySelectorAll<HTMLElement>('[data-product-close], .pd-body')];
+    const first = stops[0];
+    const last = stops[stops.length - 1];
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  dialog?.addEventListener('close', () => {
+    document.documentElement.classList.remove('dialog-open');
+    trigger?.focus();
+    trigger = null;
+  });
+</script>

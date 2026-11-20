@@ -1,0 +1,169 @@
+---
+const qs = [
+  {
+    q: 'Can an issued invoice be changed?',
+    a: 'No. Once an invoice is issued, it cannot be edited. Its items and amounts must match the sales order it came from, helping keep your records consistent.',
+    where: 'Sales invoices · Proforma invoices · Purchase invoices',
+    copy: 'original',
+  },
+  {
+    q: 'Can I trace an order back to its source?',
+    a: 'Yes. Each document shows the record it came from and the documents created from it. For example, you can open a purchase order to see the related requisition, goods receipts and quantities received.',
+    where: 'Document relationships on every detail screen',
+    copy: 'duplicate',
+  },
+  {
+    q: 'Can I see who changed a price?',
+    a: 'Yes. FlowX365 keeps a history of changes to quotations, leads and customer records, including what changed, who made the change and when. Changes to the salesperson assigned to a customer are recorded too.',
+    where: 'Revision history',
+    copy: 'triplicate',
+  },
+  {
+    q: 'Can I control what each salesperson can see?',
+    a: "Yes. You can set permissions for individual screens and actions. Salespeople can view their own work, while administrators can switch between their own results and the team's results.",
+    where: 'Roles & permissions · My / Team views',
+    copy: 'original',
+  },
+  {
+    q: 'Can I manage more than one company?',
+    a: 'Yes. You can switch between companies with one login. Each company keeps its own document numbering, letterhead, signature and PDF design, while reports can show one company or all of them together.',
+    where: 'Companies · Company switcher',
+    copy: 'duplicate',
+  },
+];
+
+const holeFor = (i: number) => (i === 0 ? 'var(--cover)' : `var(--${qs[i - 1].copy})`);
+---
+
+<section class="questions" id="questions" data-chapter-group aria-labelledby="questions-title">
+  <h2 class="visually-hidden" id="questions-title">Questions an owner should ask</h2>
+  {
+    qs.map((item, i) => (
+      <article
+        class="sheet qsheet"
+        data-copy={item.copy}
+        data-nav="light"
+        data-chapter={`No. 08 · Question ${i + 1} of ${qs.length}`}
+        id={i === 0 ? 'questions-start' : undefined}
+        aria-labelledby={`q-${i}`}
+      >
+        <span class="perf" aria-hidden="true" style={`--hole: ${holeFor(i)}`} />
+        <div class="stub" aria-hidden="true">
+          <span class="serial">Q. {i + 1} of {qs.length}</span>
+        </div>
+        <div class="sheet-inner q-inner">
+          <h3 class="display-l q" id={`q-${i}`}>
+            {item.q}
+          </h3>
+          <div class="a">
+            <p class="lede">{item.a}</p>
+            <p class="where form-head">{item.where}</p>
+          </div>
+        </div>
+      </article>
+    ))
+  }
+</section>
+
+<style>
+  .questions {
+    position: relative;
+  }
+
+  .qsheet {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    box-shadow: 0 -24px 48px -24px rgb(15 21 32 / 0.35);
+  }
+
+  .q-inner {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    grid-template-rows: 1fr auto;
+    gap: 2rem clamp(2rem, 5vw, 6rem);
+    padding-top: calc(var(--nav-h) + clamp(2rem, 6vh, 4.5rem));
+    padding-bottom: clamp(2.5rem, 8vh, 5rem);
+  }
+
+  .q {
+    grid-column: 1 / -1;
+    max-width: 15ch;
+    align-self: start;
+  }
+
+  .a {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+  }
+
+  .a .lede {
+    color: var(--ink);
+  }
+
+  .where {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--rule-strong);
+    color: var(--ink-2);
+    font-size: 0.6875rem;
+  }
+
+  /* The heading lands first; the answer follows once the sheet is in place. */
+  :global(.js) .qsheet .a {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 400ms var(--ease-out),
+      transform 500ms var(--ease-out);
+  }
+
+  :global(.js) .qsheet[data-visible] .a {
+    opacity: 1;
+    transform: none;
+    transition-delay: 60ms;
+  }
+
+  @media (max-width: 900px) {
+    .q-inner {
+      grid-template-columns: 1fr;
+    }
+    .a {
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .q {
+      font-size: clamp(2.5rem, 11vw, 3.5rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .qsheet .a {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const sheets = document.querySelectorAll('.qsheet');
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.setAttribute('data-visible', '');
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.25 },
+  );
+  sheets.forEach((s) => io.observe(s));
+</script>

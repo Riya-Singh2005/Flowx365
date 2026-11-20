@@ -1,0 +1,100 @@
+---
+import Icon from '../ui/Icon.astro';
+import { reasons } from '../../data/pricing';
+import { sectionHref } from '../../data/sections';
+---
+
+<!-- What every plan is built on: a compact strip, each item pointing to the
+     homepage chapter that shows it working. -->
+<section class="sheet why" id="why" data-nav="light" aria-labelledby="why-title">
+  <span class="perf" aria-hidden="true" style="--hole: var(--triplicate)"></span>
+  <div class="stub" aria-hidden="true"><span class="serial">Why FlowX365</span></div>
+
+  <div class="sheet-inner">
+    <h2 class="display-m" id="why-title" data-reveal="mask">Built into every plan.</h2>
+
+    <ul class="strip">
+      {
+        reasons.map((r, i) => (
+          <li class="item" data-reveal style={`--i: ${i}`}>
+            <h3 class="item-title">{r.title}</h3>
+            <p class="item-text">{r.text}</p>
+            <a class="link-quiet item-link" href={sectionHref(r.section, false)}>
+              {r.link} <Icon name="arrow-right" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .why {
+    position: relative;
+    z-index: 1;
+    padding: var(--sheet-pad) 0;
+  }
+
+  .display-m {
+    font-size: var(--sheet-title);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border-top: 2px solid var(--ink);
+    max-width: 92rem;
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.1rem clamp(0.75rem, 1.5vw, 1.5rem) 0.5rem 0;
+  }
+
+  .item + .item {
+    padding-left: clamp(0.75rem, 1.5vw, 1.5rem);
+    border-left: 1px solid var(--rule);
+  }
+
+  .item-title {
+    font-size: var(--step-0);
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+  }
+
+  .item-text {
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .item-link {
+    margin-top: auto;
+    min-height: 2.75rem;
+    color: var(--carbon);
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 1080px) {
+    .strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .item,
+    .item + .item {
+      padding: 1rem 1.25rem 0.25rem 0;
+      border-left: 0;
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .strip {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
